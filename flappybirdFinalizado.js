@@ -84,9 +84,13 @@ window.onload = function () {
         }else if(aposta < 200){
             setInterval(gerarCanos, 1200);
             velocidadeX = -3;
+            velocidadeY = -4;
+            
+
         }else{
             setInterval(gerarCanos, 1000);
             velocidadeX = -4;
+            velocidadeY = -3;
         }
 
         // Adiciona um ouvinte de evento para responder às teclas pressionadas
