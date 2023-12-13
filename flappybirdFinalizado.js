@@ -37,6 +37,8 @@ let gravidade = 0.4; // Gravidade aplicada ao pássaro
 let jogoEncerrado = false; // Indica se o jogo está encerrado
 let pontuacao = 0; // Pontuação do jogador
 
+let valorAposta;
+let aposta;
 // Aguarda até que a página HTML seja totalmente carregada antes de executar o código
 window.onload = function () {
     // Obtém a referência do elemento do tabuleiro no HTML usando o ID "tabuleiro"
@@ -65,14 +67,33 @@ window.onload = function () {
     imagemCanoInferior = new Image();
     imagemCanoInferior.src = "assets/cano-baixo.png";
 
-    // Inicia o loop de atualização do jogo usando requestAnimationFrame
-    requestAnimationFrame(atualizar);
+    const form = document.querySelector('.formulario');
+    //botaoIniciar.addEventListener('click', () => {
 
-    // Gera novos canos a cada 1.5 segundos usando setInterval
-    setInterval(gerarCanos, 1500);
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        valorAposta = document.querySelector('#aposta');
+        aposta = valorAposta.value.trim();
+        console.log("valor digitado: ", aposta);
+        // Inicia o loop de atualização do jogo usando requestAnimationFrame
+        requestAnimationFrame(atualizar);
 
-    // Adiciona um ouvinte de evento para responder às teclas pressionadas
-    document.addEventListener("keydown", moverPassaro);
+        // Gera novos canos a cada 1.5 segundos usando setInterval
+        if(aposta < 100){
+            setInterval(gerarCanos, 1600);
+        }else if(aposta < 200){
+            setInterval(gerarCanos, 1200);
+            velocidadeX = -3;
+        }else{
+            setInterval(gerarCanos, 1000);
+            velocidadeX = -4;
+        }
+
+        // Adiciona um ouvinte de evento para responder às teclas pressionadas
+        document.addEventListener("keydown", moverPassaro);
+    });
+        
+    //});
 
 }
 
@@ -90,7 +111,8 @@ function atualizar() {
     requestAnimationFrame(atualizar);
 
     if (jogoEncerrado) {
-        contexto.fillText("FIM DE JOGO", 50, 60);
+        contexto.fillText("VALOR GANHO", 5, 100);
+        contexto.fillText("R$"+pontuacao.toFixed(1), 40, 150);
         return;
     }
 
@@ -119,7 +141,7 @@ function atualizar() {
 
         // Verifica se o pássaro passou pelo cano
         if (!cano.passou && passaro.x > cano.x + cano.largura) {
-            pontuacao += 0.5; // Incrementa a pontuação por meio ponto
+            pontuacao += aposta * 0.005; // Incrementa a pontuação por meio ponto
             cano.passou = true; // Marca que o pássaro já passou por esse cano
         }
 
@@ -137,7 +159,7 @@ function atualizar() {
     // Pontuação
     contexto.fillStyle = "white";
     contexto.font = "45px sans-serif";
-    contexto.fillText(pontuacao, 5, 45);
+    contexto.fillText("\nR$"+pontuacao.toFixed(1), 5, 45);
 
 
 
